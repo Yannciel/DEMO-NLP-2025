@@ -58,5 +58,5 @@ log.txt
 .env.test.local
 .env.production.local 
 
-.txt
+*.txt
 *.html
