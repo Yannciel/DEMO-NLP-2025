@@ -16,8 +16,7 @@ This project showcases various NLP techniques and applications, including:
 DEMO-NLP-2025/
 ├── chatbot/
 │   ├── app.py         # Main chatbot application
-│   ├── app_new.py     # Updated chatbot implementation
-│   └── graph.py       # Graph visualization module
+│   └── graph.py       # LangGraph  module
 ├── data/
 │   ├── data_exemple_Excel.jsonl  # Excel data samples
 │   └── data_exemple_ppt.jsonl    # PowerPoint data samples
