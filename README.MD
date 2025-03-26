@@ -1,38 +1,80 @@
-# DEMO-NLP-2025
+# Chatbot (Multi Agent system)
 
-## Project Overview
-DEMO-NLP-2025 is a cutting-edge Natural Language Processing (NLP) project aimed at advancing the state-of-the-art in language understanding and generation. This project leverages the latest in machine learning and deep learning techniques to provide innovative solutions for various NLP tasks.
+A Natural Language Processing demonstration project featuring a chatbot implementation and data processing capabilities.
 
-## Features
-- Chabot
+## Overview
 
+This project showcases various NLP techniques and applications, including:
+- Chatbot implementation with modern NLP approaches
+- Data processing for different file formats (Excel, PowerPoint)
+- Interactive web interface for demonstration
+
+
+## Project Structure
+
+```
+DEMO-NLP-2025/
+├── chatbot/
+│   ├── app.py         # Main chatbot application
+│   ├── app_new.py     # Updated chatbot implementation
+│   └── graph.py       # Graph visualization module
+├── data/
+│   ├── data_exemple_Excel.jsonl  # Excel data samples
+│   └── data_exemple_ppt.jsonl    # PowerPoint data samples
+├── index.html         # Web interface
+└── requirement.txt    # Project dependencies
+```
+
+## Requirements
+
+- Python 3.8+
+- Dependencies listed in `requirement.txt`
 
 ## Installation
-To install the necessary dependencies, run the following command:
+
+1. Clone the repository:
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/Yannciel/DEMO-NLP-2025.git
+cd DEMO-NLP-2025
+```
+
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirement.txt
 ```
 
 ## Usage
-To use the project, follow these steps:
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/DEMO-NLP-2025.git
-    ```
-2. Navigate to the project directory:
-    ```bash
-    cd DEMO-NLP-2025
-    ```
-3. Run the main script:
-    ```bash
-    streamlit run app.py
-    ```
 
-## Contributing
-We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) for more details.
+1. Start the chatbot application:
+```bash
+streamlit chatbot/app.py
+```
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+
+## Features
+
+- **Intelligent Chatbot**: Advanced NLP-powered conversational agent
+- **Data Processing**: Support for Excel and PowerPoint file analysis
+- **Web Interface**: User-friendly interaction platform
+
+## Development
+
+- The project follows standard Python coding conventions
+- Use the provided `.gitignore` for proper version control
+- Contributions should follow the existing code structure
+
 
 ## Contact
-For any questions or inquiries, please contact us at [email@example.com](mailto:email@example.com).
+
+For any questions or suggestions, please open an issue in the GitHub repository.
+
+## Acknowledgments
+
+- Thanks to all contributors and users of this demo project
+- Special thanks to the open-source NLP community
