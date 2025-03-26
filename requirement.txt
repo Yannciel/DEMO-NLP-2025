@@ -1,0 +1,5 @@
+langchain=="0.3.10"
+langchain-community=="0.3.7"
+langchain-core=="0.3.22"
+langchain-google-community
+stremlit 

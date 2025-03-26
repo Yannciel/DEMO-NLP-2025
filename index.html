@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hair Archetype Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #8e44ad;
+            --secondary-color: #f9f0ff;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background-color: var(--secondary-color);
+            border-right: 1px solid var(--border-color);
+            height: 85vh;
+        }
+
+        .chat-container {
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: var(--light-gray);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-content {
+            margin-bottom: 0.5rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-control {
+            border-radius: 24px;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+            border-color: var(--primary-color);
+        }
+
+        .send-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            border: none;
+            z-index: 10;
+        }
+
+        .category {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .persona-card {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .persona-card:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .persona-card.active {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .persona-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin-right: 0.75rem;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .persona-details {
+            flex: 1;
+        }
+
+        .persona-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .persona-description {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .suggestion-chip {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(142, 68, 173, 0.2);
+        }
+
+        .suggestion-chip:hover {
+            background-color: rgba(142, 68, 173, 0.1);
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .feedback-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .feedback-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .feedback-btn.active {
+            color: var(--primary-color);
+        }
+
+        .settings-panel {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            border-left: 1px solid var(--border-color);
+            padding: 1.5rem;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .settings-panel.active {
+            transform: translateX(0);
+        }
+
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .settings-overlay.active {
+            display: block;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #888;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="row g-0">
+            <!-- Left Sidebar -->
+            <div class="col-md-3 sidebar p-3">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">Hair Archetype Chatbot</h4>
+                    <button class="btn btn-sm btn-outline-secondary" id="settings-btn">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                </div>
+
+                <!-- Hair Archetype Categories -->
+                <div class="category">
+                    <h5 class="category-title">Hair Archetypes</h5>
+                    <div class="persona-card active" data-persona="polished-opulence">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">POLISHED OPULENCE</div>
+                            <div class="persona-description">Elegant, glossy straight hair style</div>
+                        </div>
+                    </div>
+                    <div class="persona-card" data-persona="3d-curls">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">3D CURLS</div>
+                            <div class="persona-description">Voluminous and defined curly hair</div>
+                        </div>
+                    </div>
+                    <div class="persona-card" data-persona="celebrate-coils">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1541216970279-affbfdd55aa8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">CELEBRATE MY COILS</div>
+                            <div class="persona-description">Showcasing the beauty of natural coiled hair</div>
+                        </div>
+                    </div>
+                    <div class="persona-card" data-persona="luminous-chic">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1523263685509-57c1d050d19b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">LUMINOUS CHIC</div>
+                            <div class="persona-description">Radiant and fashionable hairstyle</div>
+                        </div>
+                    </div>
+                    <div class="persona-card" data-persona="airy-cool">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1552642986-ccb41e7059e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">AIRY COOL SLIM FACE</div>
+                            <div class="persona-description">Light, flowing hairstyle that flatters face shape</div>
+                        </div>
+                    </div>
+                    <div class="persona-card" data-persona="natural-sublimation">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1500840216050-6ffa99d75160?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">NATURAL SUBLIMATION</div>
+                            <div class="persona-description">Natural and healthy hair style</div>
+                        </div>
+                    </div>
+                    <div class="persona-card" data-persona="youth-keeper">
+                        <div class="persona-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1508186225823-0963cf9ab0de?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                        </div>
+                        <div class="persona-details">
+                            <div class="persona-name">YOUTH KEEPER</div>
+                            <div class="persona-description">Hairstyle that maintains youthful vitality</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="col-md-9 chat-container">
+                <div class="chat-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">POLISHED OPULENCE</h5>
+                        <small class="text-muted">Elegant, glossy straight hair style</small>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-danger btn-sm me-2" id="clear-chat-btn">
+                            <i class="bi bi-trash"></i> Clear Chat
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-download"></i> Export Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Bot Welcome Message -->
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <p>Hello! I represent the Polished Opulence hair archetype. I like to keep my hair smooth,
+                                straight, and full of shine. I spend time every day caring for my hair, using
+                                high-quality hair care products. I can share my daily hair care habits, product
+                                preferences, and how to maintain this sophisticated hair style. How can I help you
+                                today?
+                            </p>
+                        </div>
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn" title="Helpful"><i class="bi bi-hand-thumbs-up"></i></button>
+                            <button class="feedback-btn" title="Not Helpful"><i
+                                    class="bi bi-hand-thumbs-down"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Suggested Questions -->
+                    <div class="suggestion-chips">
+                        <div class="suggestion-chip">What is your daily hair care routine?</div>
+                        <div class="suggestion-chip">Which products are best for maintaining hair shine?</div>
+                        <div class="suggestion-chip">How do you reduce frizz in straight hair?</div>
+                        <div class="suggestion-chip">How often do you wash your hair?</div>
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="user-input" placeholder="Enter your question...">
+                        <button class="send-btn" id="send-btn">
+                            <i class="bi bi-send-fill text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settings-panel">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">Settings</h5>
+            <button class="btn btn-sm btn-outline-secondary" id="close-settings">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label for="language-select" class="form-label">Language</label>
+            <select class="form-select" id="language-select">
+                <option value="zh">中文</option>
+                <option value="en" selected>English</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="theme-select" class="form-label">Theme</label>
+            <select class="form-select" id="theme-select">
+                <option value="light" selected>Light</option>
+                <option value="dark">Dark</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Chat History</label>
+            <button class="btn btn-outline-danger btn-sm w-100">Clear All Chat History</button>
+        </div>
+    </div>
+    <div class="settings-overlay" id="settings-overlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const personaCards = document.querySelectorAll('.persona-card');
+            const chatHeader = document.querySelector('.chat-header');
+            const messagesContainer = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+
+            // Switch hair archetype
+            personaCards.forEach(card => {
+                card.addEventListener('click', function () {
+                    // Remove active class from all cards
+                    personaCards.forEach(c => c.classList.remove('active'));
+                    // Add active class to current card
+                    this.classList.add('active');
+
+                    // Update chat header
+                    const personaName = this.querySelector('.persona-name').textContent;
+                    const personaDesc = this.querySelector('.persona-description').textContent;
+                    chatHeader.querySelector('h5').textContent = personaName;
+                    chatHeader.querySelector('small').textContent = personaDesc;
+
+                    // Clear chat history and add new welcome message
+                    messagesContainer.innerHTML = '';
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'message bot-message';
+
+                    // Display different welcome messages based on hair archetype
+                    let welcomeMessage = '';
+                    const personaId = this.getAttribute('data-persona');
+
+                    switch (personaId) {
+                        case 'polished-opulence':
+                            welcomeMessage = 'Hello! I represent the Polished Opulence hair archetype. I like to keep my hair smooth, straight, and full of shine. I spend time every day caring for my hair, using high-quality hair care products. I can share my daily hair care habits, product preferences, and how to maintain this sophisticated hair style. How can I help you today?';
+                            break;
+                        case '3d-curls':
+                            welcomeMessage = 'Hello! I represent the 3D Curls hair archetype. I have voluminous, defined curls and focus on maintaining their bounce and dimension. I can share how to maintain curl shape, prevent frizz, and recommend suitable care products for curly hair. What would you like to know?';
+                            break;
+                        case 'celebrate-coils':
+                            welcomeMessage = 'Hello! I represent the Celebrate My Coils hair archetype. I love my coiled hair and am dedicated to maintaining its health and natural beauty. I can share how to care for coiled hair, moisturizing methods, and appropriate styling techniques. What questions do you have for me?';
+                            break;
+                        case 'luminous-chic':
+                            welcomeMessage = 'Hello! I represent the Luminous Chic hair archetype. I pursue radiant shine and fashionable styles for my hair, often trying different looks. I can share how to enhance hair shine, maintain lasting styles, and my favorite styling products. What would you like to learn about?';
+                            break;
+                        case 'airy-cool':
+                            welcomeMessage = 'Hello! I represent the Airy Cool Slim Face hair archetype. I prefer light, flowing hairstyles that complement my face shape. I can share how to choose hairstyles suited to your face shape, increase volume, and daily care techniques. How can I assist you?';
+                            break;
+                        case 'natural-sublimation':
+                            welcomeMessage = 'Hello! I represent the Natural Sublimation hair archetype. I focus on natural hair health and prefer products with natural ingredients. I can share how to maintain natural hair beauty, healthy care methods, and my sustainable hair care philosophy. What would you like to ask?';
+                            break;
+                        case 'youth-keeper':
+                            welcomeMessage = 'Hello! I represent the Youth Keeper hair archetype. I focus on maintaining a youthful appearance through my hairstyle, emphasizing hair health and vitality. I can share anti-aging hair care methods, how to keep hair color vibrant, and suitable hairstyle choices for different age groups. What would you like to know?';
+                            break;
+                        default:
+                            welcomeMessage = 'Hello! I am a hair archetype chatbot. What would you like to know about hair care?';
+                    }
+
+                    botMessage.innerHTML = `
+                        <div class="message-content">
+                            <p>${welcomeMessage}</p>
+                        </div>
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn" title="Helpful"><i class="bi bi-hand-thumbs-up"></i></button>
+                            <button class="feedback-btn" title="Not Helpful"><i class="bi bi-hand-thumbs-down"></i></button>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(botMessage);
+
+                    // Add new suggestion questions
+                    const suggestionChips = document.createElement('div');
+                    suggestionChips.className = 'suggestion-chips';
+
+                    // Display different suggestion questions based on hair archetype
+                    let suggestions = [];
+                    switch (personaId) {
+                        case 'polished-opulence':
+                            suggestions = [
+                                'What is your daily hair care routine?',
+                                'Which products are best for maintaining hair shine?',
+                                'How do you reduce frizz in straight hair?',
+                                'How often do you wash your hair?'
+                            ];
+                            break;
+                        case '3d-curls':
+                            suggestions = [
+                                'How do you maintain curl elasticity?',
+                                'What hair care products work well for curly hair?',
+                                'How do you prevent curly hair from tangling?',
+                                'What are your daily curly hair care tips?'
+                            ];
+                            break;
+                        case 'celebrate-coils':
+                            suggestions = [
+                                'How do you keep coiled hair moisturized?',
+                                'What wash and care products suit coiled hair?',
+                                'How do you reduce frizz in coiled hair?',
+                                'What styling techniques work for coiled hair?'
+                            ];
+                            break;
+                        case 'luminous-chic':
+                            suggestions = [
+                                'How do you increase hair shine?',
+                                'What styling products do you prefer?',
+                                'How do you make hairstyles last longer?',
+                                'What care methods work for shiny hair?'
+                            ];
+                            break;
+                        case 'airy-cool':
+                            suggestions = [
+                                'How do you choose hairstyles for your face shape?',
+                                'How do you add volume to your hair?',
+                                'What hair care products work for light hairstyles?',
+                                'How do you maintain a light feel in your hair?'
+                            ];
+                            break;
+                        case 'natural-sublimation':
+                            suggestions = [
+                                'What natural hair care products do you use?',
+                                'How do you maintain natural hair health?',
+                                'What is your sustainable hair care philosophy?',
+                                'How do you reduce chemical product usage?'
+                            ];
+                            break;
+                        case 'youth-keeper':
+                            suggestions = [
+                                'How can hairstyles make you look younger?',
+                                'What anti-aging hair care methods do you recommend?',
+                                'How do you keep hair color vibrant?',
+                                'What hairstyle suggestions do you have for different age groups?'
+                            ];
+                            break;
+                        default:
+                            suggestions = [
+                                'Can you share some hair care tips?',
+                                'How do I choose a hairstyle that suits me?',
+                                'What are the basic steps for daily hair care?',
+                                'How do I solve common hair problems?'
+                            ];
+                    }
+
+                    let suggestionsHTML = '';
+                    suggestions.forEach(suggestion => {
+                        suggestionsHTML += `<div class="suggestion-chip">${suggestion}</div>`;
+                    });
+
+                    suggestionChips.innerHTML = suggestionsHTML;
+                    messagesContainer.appendChild(suggestionChips);
+
+                    // Bind click events to new suggestion questions
+                    suggestionChips.querySelectorAll('.suggestion-chip').forEach(chip => {
+                        chip.addEventListener('click', function () {
+                            userInput.value = this.textContent;
+                        });
+                    });
+                });
+            });
+
+            // Send message
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message) {
+                    // Add user message
+                    const userMessage = document.createElement('div');
+                    userMessage.className = 'message user-message';
+                    userMessage.innerHTML = `
+                        <div class="message-content">
+                            <p>${message}</p>
+                        </div>
+                        <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                    `;
+                    messagesContainer.appendChild(userMessage);
+
+                    // Clear input field
+                    userInput.value = '';
+
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                    // Simulate bot reply
+                    setTimeout(() => {
+                        const botMessage = document.createElement('div');
+                        botMessage.className = 'message bot-message';
+
+                        // Generate reply based on current hair archetype and user question
+                        const activePersona = document.querySelector('.persona-card.active');
+                        const personaId = activePersona.getAttribute('data-persona');
+                        let botReply = '';
+
+                        // Simple example - in a real application, more complex logic or API calls would be used
+                        if (message.includes('routine') || message.includes('daily care')) {
+                            switch (personaId) {
+                                case 'polished-opulence':
+                                    botReply = 'My daily hair care routine focuses on maintaining shine and smoothness. Every morning, I gently brush my hair and apply some hair oil to the ends. I do deep conditioning masks twice a week to keep my hair moisturized. When washing, I choose nourishing shampoos and prefer to rinse with cool water, which helps maintain shine. After washing, I gently pat dry with a microfiber towel to avoid friction that causes frizz. Finally, I use conditioner and leave-in products to ensure my hair stays smooth all day.';
+                                    break;
