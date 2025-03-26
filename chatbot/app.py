@@ -132,14 +132,14 @@ with left_col:
     st.subheader("✂️ Hairstyles")
     st.markdown(
         """
-    - 👱‍♀️ Classic Short Hair
-    - 👩 Bob Cut
-    - 👱‍♀️ Long Straight Hair
-    - 👩‍🦱 Curly Hair
-    - 👰 Braided Styles
-    - 👩‍🦰 Wavy Hair
-    - 👩‍🦳 Straight Hair
-    - 👩‍🦲 Youth Keeper
+    - 👱‍♀️ POLISHED OPULENCE
+    - 👩 3D CURLS
+    - 👱‍♀️ CELEBRATE MY COILS
+    - 👩‍🦱 LUMINOUS CHIC
+    - 👰 AIRY COOL SLIM FACE
+    - 👩‍🦰 NATURAL SUBLIMATION
+    - 👩‍� YOUTH KEEPER
+
     """
     )
 
